@@ -3,7 +3,7 @@
 #ifndef MOTOR_H
 #define MOTOR_H
 
-#define MOTOR_MAX_PWM 255   // PWM Signal, uint8
+#define MOTOR_MAX_PWM 255   // Max PWM Signal, uint8
 #define MOTOR_MAX_OUTPUT 1  // Percentage to PWM
 
 /**
@@ -11,9 +11,9 @@
  */
 class Motor {
   private:
-    const uint8_t pinCW;    // Pin that Spins the Wheel Clock-wise
-    const uint8_t pinCCW;   // Pin that Spins the Wheel Counter-Clock-wise
-    const uint8_t pinSpeed; // PWM Pin for controlling Motor speed
+    const uint8_t PIN_DIO_CW;    // Pin that Spins the Wheel Clock-wise
+    const uint8_t PIN_DIO_CCW;   // Pin that Spins the Wheel Counter-Clock-wise
+    const uint8_t PIN_PWM;   // PWM Pin for controlling Motor power
 
   public:
     bool inverted;  // CCW Positive
@@ -27,32 +27,29 @@ class Motor {
      * @param inverted Whether the CW/CCW directions need to be inverted to move Forwards
      * @attention inverted is mutable, so it can be changed during runtime!
      */
-    Motor(uint8_t pinCW, uint8_t pinCCW, uint8_t pinSpeed, bool inverted);
+    Motor(uint8_t dioCW, uint8_t dioCCW, uint8_t pwm, bool inverted);
 
     /**
      * @brief Sets the Motors Speed, inverts for Forward/Backwards
-     * @param motor The motor struct to apply
-     * @param speed The PWM value [0, 255]
+     * @param signal The PWM value [0, 255]
      * @param forward Boolean to decide which Dir Pin to use, affected by @see Motor::inverted
      */
-    void setPWM(uint8_t speed, bool forward);
+    void setPWM(uint8_t signal, bool forward);
 
     /**
      * @brief Set the Motors Speed, +/- Forwards/Backwards
-     * @param motor The motor struct to apply
-     * @param speed The PWM Value [-255, 255]
+     * @param signal The PWM Value [-255, 255]
      * @note Affected by @see Motor::inverted
      */
-    void setPWM(uint16_t speed);
+    void setPWM(uint16_t signal);
 
     /**
      * @brief Set the Motors Power, +/- Forwards/Backwards
-     * @param motor The motor struct to apply
-     * @param power percentage of applied output [-1, 1] 
+     * @param (+/-) percentage of pulse to apply HIGH/LOW signal [-1, 1] 
      * @note Affected by @see Motor::inverted
      * @attention Values are lossy (converted to PWM [0, 255])
      */
-    void set(float power);
+    void set(float dutyCycle);
 
     /**
      * @brief Set the Motors direction
